@@ -24,9 +24,9 @@ print(f"Aluno: {nome} | Média: {media:.2f} | Situação: {situacao}")
 # ==========================================================
 # Disciplina : Programação de Sistemas (PS)
 # Aula       : 05 - Revisão: Estruturas de Dados
-# Autor      : JOÃO PEDRO MAUDA
+# Autor      : Rafael Lopes
 # Data       : 26/02/2026
-# Repositório: https://github.com/20251ctb0100055-del/2026-PS
+# Repositório: https://github.com/20251ctb0100049-a11y/2026-PS1
 # ==========================================================
 # DESCRIÇÃO:
 # Catálogo de livros que demonstra o uso de listas
