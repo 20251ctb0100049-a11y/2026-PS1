@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
+""""
 ==============================================================================
 ARQUIVO: 01_Comentarios.py
 DISCIPLINA: Programação de Sistemas (2026-PS)
