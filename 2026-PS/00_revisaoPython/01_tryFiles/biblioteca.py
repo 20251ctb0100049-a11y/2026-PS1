@@ -141,3 +141,83 @@ def menu():
 
             _, funcao = opcoes[escolha]
             funcao()
+        finally:
+            # Executado SEMPRE - com ou sem exceção
+            # Aqui: didático. Em produção: fecha arquivos, conexões, etc.
+            pass
+
+if __name__== "__main__":
+    menu()
+def carregar_catalogo():
+    """Lê o .txt e reconstrói a lista de dicionários."""
+    catalogo = []
+    try:
+        # 'r' = leitura | encoding='utf-8' garante acentos corretos
+        with open(ARQUIVO, "r", encoding="utf-8") as f:
+            for linha in f:
+                linha = linha.strip()
+                if not linha:          # ignora linhas vazias
+                    continue
+                
+                partes = linha.split(SEPARADOR)
+                if len(partes) != 3:   # linha malformada -> pula
+                    continue
+                
+                titulo, autor, disponivel_str = partes
+                catalogo.append({
+                    "titulo":     titulo,
+                    "autor":      autor,
+                    # a string "True" no arquivo precisa virar bool True
+                    "disponivel": disponivel_str == "True"
+                })
+    except FileNotFoundError:
+        pass  # primeira execução: arquivo ainda não existe — tudo bem
+    
+    return catalogo
+
+def carregar_catalogo():
+    """Lê o .txt e reconstrói a lista de dicionários."""
+    catalogo = []
+    
+    try:
+        # 'r' = leitura | encoding='utf-8' garante acentos corretos
+        with open(ARQUIVO, "r", encoding="utf-8") as f:
+            for linha in f:
+                linha = linha.strip()
+                
+                if not linha:        # ignora linhas vazias
+                    continue
+                
+                partes = linha.split(SEPARADOR)
+                
+                if len(partes) != 3: # linha malformada -> pula
+                    continue
+                
+                titulo, autor, disponivel_str = partes
+                
+                catalogo.append({
+                    "titulo":     titulo,
+                    "autor":      autor,
+                    # a string "True" no arquivo precisa virar bool True
+                    "disponivel": disponivel_str == "True"
+                })
+                
+    except FileNotFoundError:
+        pass  # primeira execução: arquivo ainda não existe — tudo bem
+        
+    return catalogo
+
+def salvar_catalogo(catalogo):
+    """Grava toda a lista no arquivo .txt."""
+    try:
+        # 'w' = write: cria se não existir, sobrescreve se existir
+        with open(ARQUIVO, "w", encoding="utf-8") as f:
+            for livro in catalogo:
+                linha = f"{livro['titulo']}{SEPARADOR}{livro['autor']}{SEPARADOR}{livro['disponivel']}\n"
+                f.write(linha)
+        
+        print(f"💾 Catálogo salvo em '{ARQUIVO}'.")
+        
+    except IOError as e:
+        # IOError: disco cheio, permissão negada, etc.
+        print(f"❌ Erro ao salvar: {e}")
