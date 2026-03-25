@@ -1,0 +1,6 @@
+O Programador Pragmático|Andrew Hunt|True
+Código Limpo|Robert C. Martin|False
+Padrões de Projeto|Erich Gamma|True
+hq homem aranha|stan lee|False
+como treinar seu dragão|rafael|False
+hq batman|marisa|False
