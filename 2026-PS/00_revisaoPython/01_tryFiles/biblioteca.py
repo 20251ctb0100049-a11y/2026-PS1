@@ -1,3 +1,13 @@
+# ====================================================
+# Sistema de Biblioteca
+# ====================================================
+# Disciplina : Programação de Sistemas (PS)
+# Aula       : 10 - Atividade: Sistema de Biblioteca
+# Autor      : RAFAEL LOPES PAZ OLIVEIRA PALHANO
+# Data       : 24/03/2026
+# Repositório: https://github.com/20251ctb0100049-a11y/2026-PS1
+# ====================================================
+
 ARQUIVO = "biblioteca.txt"
 SEPARADOR = "|"
 
