@@ -1,10 +1,16 @@
+'''
+====================================================
+# ARQUIVO    : hotel_para_pet.py
+# Disciplina : Programação de Sistemas
+# Autor      : Rafael Lopes Paz Oliveira Palhano
+====================================================
+'''
+
 import pickle
 import os
 
-# ====================================================
-# CLASSE PET (Original Aula 20)
-# ====================================================
 class Pet:
+
     def __init__(self, nome, especie, raca, idade, peso, nome_dono, vacinado=False):
         self.nome = nome
         self.especie = especie
@@ -34,7 +40,7 @@ class Pet:
 
     def registrar_saida(self):
         if not self.hospedado:
-            print(f"Erro: {self.nome} não está no hotel.")
+         print(f"Erro: {self.nome} não está no hotel.")
         else:
             self.hospedado = False
             print(f"✓ Check-out: {self.nome} saiu do hotel.")
@@ -43,25 +49,21 @@ class Pet:
         self.peso = float(novo_peso)
         print(f"✓ Peso de {self.nome} atualizado para {self.peso}kg.")
 
-# ====================================================
-# FUNÇÕES DE PERSISTÊNCIA (TXT E BINÁRIO)
-# ====================================================
-
 def salvar_dados(lista):
     """Salva em Binário (para o Python) e em TXT (para humanos)."""
-    # 1. Salvar em Binário (Pickle) - Nível B
     with open("petville_dados.bin", "wb") as f_bin:
         pickle.dump(lista, f_bin)
-    
-    # 2. Salvar em TXT (Texto Simples) - Nível C
+
     with open("petville_lista.txt", "w", encoding="utf-8") as f_txt:
         f_txt.write("RELATÓRIO DE PETS - HOTEL PETVILLE\n")
         f_txt.write("="*40 + "\n")
         for p in lista:
             status = "Hospedado" if p.hospedado else "Em Casa"
             f_txt.write(f"Pet: {p.nome} | Espécie: {p.especie} | Peso: {p.peso}kg | Status: {status}\n")
-    
+
     print("\n[SISTEMA] Dados salvos em 'petville_dados.bin' e 'petville_lista.txt'!")
+
+
 
 def carregar_dados():
     """Tenta carregar o binário, se não existir, retorna lista vazia."""
@@ -70,13 +72,9 @@ def carregar_dados():
             return pickle.load(f)
     return []
 
-# ====================================================
-# MENU PRINCIPAL
-# ====================================================
-
 def menu():
     pets = carregar_dados()
-    
+
     while True:
         print("\n--- 🐾 PETVILLE: MENU DE RECEPÇÃO ---")
         print("1. Cadastrar Pet")
@@ -85,7 +83,7 @@ def menu():
         print("4. Check-out (Saída)")
         print("5. Atualizar Peso")
         print("0. Sair e Salvar Tudo")
-        
+
         op = input("\nEscolha uma opção: ")
 
         if op == "1":
@@ -103,6 +101,8 @@ def menu():
             if not pets: print("\n[Agenda vazia]")
             for p in pets: p.exibir_dados()
 
+
+
         elif op == "3":
             nome = input("Nome do pet para entrada: ")
             for p in pets:
@@ -112,6 +112,8 @@ def menu():
             nome = input("Nome do pet para saída: ")
             for p in pets:
                 if p.nome.lower() == nome.lower(): p.registrar_saida()
+
+
 
         elif op == "5":
             nome = input("Nome do pet: ")
