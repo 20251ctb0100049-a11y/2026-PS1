@@ -1,3 +1,0 @@
-RELATÓRIO DE PETS - HOTEL PETVILLE
-========================================
-Pet: belinha | Espécie: cachorro | Peso: 20.0kg | Status: Em Casa
