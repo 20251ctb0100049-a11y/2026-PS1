@@ -8,23 +8,14 @@
 # Atividade  : Classe Pet Completa
 ====================================================
 '''
-
 class Pet:
-
     '''
-
     Esta classe representa um Pet em um sistema simples de hotel para pets.
-
     '''
-
-
-
     def __init__(self, nome, especie, raca, idade, peso, nome_dono, vacinado=False):
 
         '''
-
         Método construtor atualizado com novos atributos.
-
         '''
 
         self.nome = nome
@@ -142,17 +133,11 @@ pet3 = Pet("Thor", "Cachorro", "Poodle", 12, 8.0, "Marcos", True)
 pet1.exibir_dados()
 pet1.registrar_entrada()
 pet1.registrar_entrada() # Teste de aviso: já hospedado
-
-
-
 # --- Testando Pet 2 (Mingau) ---
-
 pet2.verificar_vacinacao()
 pet2.atualizar_peso(4.8)
 pet2.emitir_resumo()
-
 # --- Testando Pet 3 (Thor) ---
-
 pet3.registrar_entrada()
 pet3.emitir_resumo() # Verificando se a diária de idoso (R$ 75) aplica corretamente
 pet3.registrar_saida()
