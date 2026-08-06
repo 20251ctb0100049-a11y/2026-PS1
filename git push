@@ -1,0 +1,30 @@
+[33mf45b493[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: classe Main com os 5 casos de teste e README
+[33mb80a063[m feat: adicao do atributo tecnicoResponsavel e gerarResumo
+[33m9ee0a22[m feat: metodos de negocio fechar, reabrir e alterarPrioridade
+[33m5632b50[m feat: implementacao de validacoes e getters/setters
+[33mf69ccec[m feat: declaracao de atributos privados e construtor
+[33m62de00f[m feat: criacao inicial do projeto e classe produto
+[33mf165b27[m aula26: Cardapio Restaurante
+[33m6a3e010[m aula25: primeiro programa java
+[33m3a789b7[m aula25: persistencia em json
+[33me84fd7c[m aula 23: hotel para pet
+[33mc9441d1[m aula 21: hotel pra Pet
+[33m44c5163[m aula20: classe Pet
+[33m053d8c4[m aula10: sistema de biblioteca finalizado
+[33m628b667[m aula10: biblioteca v2 - persistencia em txt
+[33m8e5ce30[m aula10: biblioteca v1 - try/except em memoria
+[33m3fcce49[m aula10: biblioteca v1 - try/except em memoria
+[33md6e5e72[m aula10: biblioteca v1 - try/except em memoria
+[33m8c13f46[m aula07: desafio - expansao sistema de conversao
+[33mc546183[m aula07: revisao guiada - modulos, pacotes e organizacao
+[33mfbbc5e7[m aula06: revisao guiada - funcoes, parametros, retorno
+[33m95987cd[m aula05: desafio - sistema de biblioteca expansao
+[33m2680a78[m aula04: desafio - sistema de controle de estoque
+[33m9508eb8[m aula04: desafio - sistema de controle de estoque
+[33m613d47a[m fix: converte submodule em pasta normal
+[33m3df0653[m aula04: desafio - sistema de controle de estoque
+[33m9728554[m Update 01b-debug.py
+[33m690d8b2[m Update 01b-debug.py
+[33m39cf022[m feat: adiciona calculadora simples com as 4 operações
+[33m8b30050[m primeiro commit
+[33m08d1195[m Initial commit
