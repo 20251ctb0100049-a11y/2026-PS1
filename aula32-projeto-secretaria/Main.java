@@ -1,5 +1,5 @@
 /*
- * Disciplina: Programação 
+ * Disciplina: Programação / Orientação a Objetos
  * Nome: Rafael Lopes
  * Data: 20/08/2026
  * Projeto: Secretaria do Campus
@@ -17,15 +17,18 @@ public class Main {
         int opcao = -1;
 
         do {
-            System.out.println("\n--- SISTEMA DA SECRETARIA - Rafael Lopes ---");
-            System.out.println("1. Cadastrar Aluno");
-            System.out.println("2. Listar Alunos");
-            System.out.println("3. Buscar por Matrícula");
-            System.out.println("4. Atualizar Aluno");
-            System.out.println("5. Remover Aluno");
-            System.out.println("6. Relatório por Curso");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
+            System.out.println("\n==========================================");
+            System.out.println("   SECRETARIA DO CAMPUS - por Rafael Lopes");
+            System.out.println("==========================================");
+            System.out.println("[1] Cadastrar aluno");
+            System.out.println("[2] Listar alunos");
+            System.out.println("[3] Buscar por matricula");
+            System.out.println("[4] Atualizar curso");
+            System.out.println("[5] Remover aluno");
+            System.out.println("[6] Relatorio");
+            System.out.println("[7] Buscar por nome");
+            System.out.println("[0] Sair");
+            System.out.print("Sua escolha: ");
 
             try {
                 opcao = Integer.parseInt(scanner.nextLine());
@@ -40,39 +43,43 @@ public class Main {
                 case 4 -> atualizarAluno();
                 case 5 -> removerAluno();
                 case 6 -> gerarRelatorio();
-                case 0 -> System.out.println("Encerrando o sistema...");
-                default -> System.out.println("Opção inválida! Vale 0, 1, 2, 3, 4, 5 ou 6.");
+                case 7 -> buscarPorNomeExibir();
+                case 0 -> System.out.println("Secretaria fechada. Ate a proxima!");
+                default -> System.out.println("Opcao invalida! Vale 0, 1, 2, 3, 4, 5, 6 ou 7.");
             }
         } while (opcao != 0);
     }
 
+    // Método auxiliar reutilizável (Retorna o objeto ou null)
     private static Aluno buscarPorMatricula(String matricula) {
         for (Aluno a : listaAlunos) {
             if (a.getMatricula().equalsIgnoreCase(matricula)) {
-                return a; 
+                return a; // Retorna a referência exata do objeto
             }
         }
         return null;
     }
 
     private static void cadastrarAluno() {
-        System.out.print("Matrícula: ");
+        System.out.print("Matricula: ");
         String matricula = scanner.nextLine().trim();
 
+        // Validação de campo vazio
         if (matricula.isEmpty()) {
-            System.out.println("Erro: A matrícula não pode ser vazia.");
+            System.out.println("Erro: A matricula nao pode ser vazia.");
             return;
         }
 
+        // Validação de matrícula única
         if (buscarPorMatricula(matricula) != null) {
-            System.out.println("Erro: Já existe um aluno cadastrado com essa matrícula.");
+            System.out.println("Ja existe ficha com a matricula " + matricula + "!");
             return;
         }
 
         System.out.print("Nome: ");
         String nome = scanner.nextLine().trim();
         if (nome.isEmpty()) {
-            System.out.println("Erro: O nome não pode ser vazio.");
+            System.out.println("Erro: O nome nao pode ser vazio.");
             return;
         }
 
@@ -83,17 +90,17 @@ public class Main {
         String cidade = scanner.nextLine().trim();
 
         listaAlunos.add(new Aluno(matricula, nome, curso, cidade));
-        System.out.println("Aluno cadastrado com sucesso!");
+        System.out.println("Ficha de " + nome + " arquivada!");
     }
 
     private static void listarAlunos() {
         if (listaAlunos.isEmpty()) {
-            System.out.println("Nenhum aluno cadastrado.");
+            System.out.println("Nenhuma ficha no gaveteiro.");
             return;
         }
         System.out.println("\n--- FICHAS NO GAVETEIRO: " + listaAlunos.size() + " ---");
         for (Aluno a : listaAlunos) {
-            System.out.println(a); 
+            System.out.println(a); // Chama o toString() da classe Aluno
         }
     }
 
@@ -103,7 +110,7 @@ public class Main {
         Aluno a = buscarPorMatricula(matricula);
 
         if (a == null) {
-            System.out.println("Aluno não encontrado.");
+            System.out.println("Nenhuma ficha com a matricula " + matricula + ".");
         } else {
             System.out.println("Achei: " + a);
         }
@@ -115,37 +122,37 @@ public class Main {
         Aluno a = buscarPorMatricula(matricula);
 
         if (a == null) {
-            System.out.println("Aluno não encontrado.");
+            System.out.println("Nenhuma ficha com a matricula " + matricula + ".");
             return;
         }
 
         System.out.print("Novo curso de " + a.getNome() + ": ");
         String novoCurso = scanner.nextLine();
         if (!novoCurso.isEmpty()) {
-            a.setCurso(novoCurso);
+            a.setCurso(novoCurso); // Altera o objeto original
         }
 
         System.out.println("Ficha atualizada: " + a);
     }
 
     private static void removerAluno() {
-        System.out.print("Digite a matrícula do aluno a remover: ");
+        System.out.print("Matricula da ficha a remover: ");
         String matricula = scanner.nextLine();
         Aluno a = buscarPorMatricula(matricula);
 
         if (a == null) {
-            System.out.println("Aluno não encontrado.");
+            System.out.println("Nenhuma ficha com a matricula " + matricula + ".");
             return;
         }
 
-        System.out.print("Tem certeza que deseja remover " + a.getNome() + "? (S/N): ");
+        System.out.print("Tem certeza que remove " + a.getNome() + "? (s/n): ");
         String confirmacao = scanner.nextLine();
 
-        if (confirmacao.equalsIgnoreCase("S")) {
+        if (confirmacao.equalsIgnoreCase("s")) {
             listaAlunos.remove(a);
-            System.out.println("Aluno removido com sucesso.");
+            System.out.println("Ficha removida.");
         } else {
-            System.out.println("Remoção cancelada.");
+            System.out.println("Remocao cancelada.");
         }
     }
 
@@ -156,14 +163,35 @@ public class Main {
         System.out.print("Contar alunos de qual curso? ");
         String cursoProcurado = scanner.nextLine().trim();
 
+        // preparar (ANTES do for)
         int contador = 0;
 
+        // percorrer
         for (Aluno a : listaAlunos) {
             if (a.getCurso().equalsIgnoreCase(cursoProcurado)) {
                 contador++;
             }
         }
 
+        // usar
         System.out.println("Alunos de " + cursoProcurado + ": " + contador);
+    }
+
+    // MELHORIA (a): Buscar aluno por Nome
+    private static void buscarPorNomeExibir() {
+        System.out.print("Nome procurado: ");
+        String nomeProcurado = scanner.nextLine().trim();
+        boolean encontrado = false;
+
+        for (Aluno a : listaAlunos) {
+            if (a.getNome().equalsIgnoreCase(nomeProcurado)) {
+                System.out.println("Achei: " + a);
+                encontrado = true;
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Nenhuma ficha encontrada para o nome: " + nomeProcurado);
+        }
     }
 }
