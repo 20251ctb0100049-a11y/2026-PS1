@@ -10,13 +10,13 @@ public class Aluno {
     private String matricula;
     private String nome;
     private String curso;
-    private int idade; // Atributo extra
+    private String cidade; 
 
-    public Aluno(String matricula, String nome, String curso, int idade) {
+    public Aluno(String matricula, String nome, String curso, String cidade) {
         this.matricula = matricula;
         this.nome = nome;
         this.curso = curso;
-        this.idade = idade;
+        this.cidade = cidade;
     }
 
     public String getMatricula() {
@@ -43,19 +43,16 @@ public class Aluno {
         this.curso = curso;
     }
 
-    public int getIdade() {
-        return idade;
+    public String getCidade() {
+        return cidade;
     }
 
-    public void setIdade(int idade) {
-        this.idade = idade;
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
     }
 
     @Override
     public String toString() {
-        return "Matrícula: " + matricula + 
-               " | Nome: " + nome + 
-               " | Curso: " + curso + 
-               " | Idade: " + idade;
+        return matricula + " | " + nome + " | " + curso + " | " + cidade;
     }
 }

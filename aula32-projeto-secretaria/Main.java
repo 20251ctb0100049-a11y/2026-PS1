@@ -1,5 +1,5 @@
 /*
- * Disciplina: Programação / Orientação a Objetos
+ * Disciplina: Programação 
  * Nome: Rafael Lopes
  * Data: 20/08/2026
  * Projeto: Secretaria do Campus
@@ -17,7 +17,7 @@ public class Main {
         int opcao = -1;
 
         do {
-            System.out.println("\n--- SISTEMA DA SECRETARIA - [SEU NOME] ---");
+            System.out.println("\n--- SISTEMA DA SECRETARIA - Rafael Lopes ---");
             System.out.println("1. Cadastrar Aluno");
             System.out.println("2. Listar Alunos");
             System.out.println("3. Buscar por Matrícula");
@@ -41,16 +41,15 @@ public class Main {
                 case 5 -> removerAluno();
                 case 6 -> gerarRelatorio();
                 case 0 -> System.out.println("Encerrando o sistema...");
-                default -> System.out.println("Opção inválida! Tente novamente.");
+                default -> System.out.println("Opção inválida! Vale 0, 1, 2, 3, 4, 5 ou 6.");
             }
         } while (opcao != 0);
     }
 
-    // Método auxiliar reutilizável (Retorna o objeto ou null)
     private static Aluno buscarPorMatricula(String matricula) {
         for (Aluno a : listaAlunos) {
             if (a.getMatricula().equalsIgnoreCase(matricula)) {
-                return a; // Retorna a referência exata do objeto
+                return a; 
             }
         }
         return null;
@@ -60,13 +59,11 @@ public class Main {
         System.out.print("Matrícula: ");
         String matricula = scanner.nextLine().trim();
 
-        // Nível A: Validação de campo vazio
         if (matricula.isEmpty()) {
             System.out.println("Erro: A matrícula não pode ser vazia.");
             return;
         }
 
-        // Nível B: Validação de matrícula única
         if (buscarPorMatricula(matricula) != null) {
             System.out.println("Erro: Já existe um aluno cadastrado com essa matrícula.");
             return;
@@ -82,10 +79,10 @@ public class Main {
         System.out.print("Curso: ");
         String curso = scanner.nextLine().trim();
 
-        System.out.print("Idade: ");
-        int idade = Integer.parseInt(scanner.nextLine());
+        System.out.print("Cidade: ");
+        String cidade = scanner.nextLine().trim();
 
-        listaAlunos.add(new Aluno(matricula, nome, curso, idade));
+        listaAlunos.add(new Aluno(matricula, nome, curso, cidade));
         System.out.println("Aluno cadastrado com sucesso!");
     }
 
@@ -94,26 +91,26 @@ public class Main {
             System.out.println("Nenhum aluno cadastrado.");
             return;
         }
-        System.out.println("\n--- LISTA DE ALUNOS ---");
+        System.out.println("\n--- FICHAS NO GAVETEIRO: " + listaAlunos.size() + " ---");
         for (Aluno a : listaAlunos) {
-            System.out.println(a); // Usa o toString() automaticamente
+            System.out.println(a); 
         }
     }
 
     private static void buscarEExibirAluno() {
-        System.out.print("Digite a matrícula para busca: ");
+        System.out.print("Matricula procurada: ");
         String matricula = scanner.nextLine();
         Aluno a = buscarPorMatricula(matricula);
 
         if (a == null) {
             System.out.println("Aluno não encontrado.");
         } else {
-            System.out.println("Encontrado: " + a);
+            System.out.println("Achei: " + a);
         }
     }
 
     private static void atualizarAluno() {
-        System.out.print("Digite a matrícula do aluno a atualizar: ");
+        System.out.print("Matricula da ficha a atualizar: ");
         String matricula = scanner.nextLine();
         Aluno a = buscarPorMatricula(matricula);
 
@@ -122,19 +119,13 @@ public class Main {
             return;
         }
 
-        System.out.print("Novo Nome (atual: " + a.getNome() + "): ");
-        String novoNome = scanner.nextLine();
-        if (!novoNome.isEmpty()) {
-            a.setNome(novoNome); // Altera o objeto referenciado na lista
-        }
-
-        System.out.print("Novo Curso (atual: " + a.getCurso() + "): ");
+        System.out.print("Novo curso de " + a.getNome() + ": ");
         String novoCurso = scanner.nextLine();
         if (!novoCurso.isEmpty()) {
             a.setCurso(novoCurso);
         }
 
-        System.out.println("Dados atualizados com sucesso!");
+        System.out.println("Ficha atualizada: " + a);
     }
 
     private static void removerAluno() {
@@ -159,7 +150,20 @@ public class Main {
     }
 
     private static void gerarRelatorio() {
-        System.out.println("\n--- RELATÓRIO DA SECRETARIA ---");
-        System.out.println("Total de alunos cadastrados: " + listaAlunos.size());
+        System.out.println("\n--- RELATORIO DA SECRETARIA ---");
+        System.out.println("Total de fichas: " + listaAlunos.size());
+
+        System.out.print("Contar alunos de qual curso? ");
+        String cursoProcurado = scanner.nextLine().trim();
+
+        int contador = 0;
+
+        for (Aluno a : listaAlunos) {
+            if (a.getCurso().equalsIgnoreCase(cursoProcurado)) {
+                contador++;
+            }
+        }
+
+        System.out.println("Alunos de " + cursoProcurado + ": " + contador);
     }
 }
