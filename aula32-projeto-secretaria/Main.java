@@ -50,11 +50,11 @@ public class Main {
         } while (opcao != 0);
     }
 
-    // Método auxiliar reutilizável (Retorna o objeto ou null
+    // Método auxiliar reutilizável (Retorna o objeto ou null))
     private static Aluno buscarPorMatricula(String matricula) {
         for (Aluno a : listaAlunos) {
             if (a.getMatricula().equalsIgnoreCase(matricula)) {
-                return a; // Retorna a referência exata do objeto
+                return a; 
             }
         }
         return null;
@@ -64,13 +64,13 @@ public class Main {
         System.out.print("Matricula: ");
         String matricula = scanner.nextLine().trim();
 
-        // Validação de campo vazio
+
         if (matricula.isEmpty()) {
             System.out.println("Erro: A matricula nao pode ser vazia.");
             return;
         }
 
-        // Validação de matrícula única
+
         if (buscarPorMatricula(matricula) != null) {
             System.out.println("Ja existe ficha com a matricula " + matricula + "!");
             return;
@@ -100,7 +100,7 @@ public class Main {
         }
         System.out.println("\n--- FICHAS NO GAVETEIRO: " + listaAlunos.size() + " ---");
         for (Aluno a : listaAlunos) {
-            System.out.println(a); // Chama o toString() da classe Aluno
+            System.out.println(a);
         }
     }
 
@@ -163,10 +163,8 @@ public class Main {
         System.out.print("Contar alunos de qual curso? ");
         String cursoProcurado = scanner.nextLine().trim();
 
-        // preparar (ANTES do for)
         int contador = 0;
 
-        // percorrer
         for (Aluno a : listaAlunos) {
             if (a.getCurso().equalsIgnoreCase(cursoProcurado)) {
                 contador++;
@@ -177,7 +175,7 @@ public class Main {
         System.out.println("Alunos de " + cursoProcurado + ": " + contador);
     }
 
-    // MELHORIA (a): Buscar aluno por Nome
+
     private static void buscarPorNomeExibir() {
         System.out.print("Nome procurado: ");
         String nomeProcurado = scanner.nextLine().trim();
