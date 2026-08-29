@@ -50,7 +50,7 @@ public class Main {
         } while (opcao != 0);
     }
 
-    // Método auxiliar reutilizável (Retorna o objeto ou null)
+    // Método auxiliar reutilizável (Retorna o objeto ou null
     private static Aluno buscarPorMatricula(String matricula) {
         for (Aluno a : listaAlunos) {
             if (a.getMatricula().equalsIgnoreCase(matricula)) {
