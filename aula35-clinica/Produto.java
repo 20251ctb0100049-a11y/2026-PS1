@@ -35,7 +35,6 @@ public class Produto {
         this.preco = preco;
     }
 
-    // Métodos para alterar preço (Sobrecarga)
     public void alterarPreco(double preco) {
         this.preco = preco;
     }
@@ -44,7 +43,6 @@ public class Produto {
         this.preco = preco - (preco * (desconto / 100));
     }
 
-    // Representação em texto
     @Override
     public String toString() {
         return codigo + " - " + nome + " - R$ " + String.format("%.2f", preco);

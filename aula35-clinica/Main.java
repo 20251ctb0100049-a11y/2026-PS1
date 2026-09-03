@@ -40,7 +40,7 @@ public class Main {
     // Método de busca corrigido
     static Produto buscarPorCodigo(int codigo) {
         for (Produto p : produtos) {
-            if (p.getCodigo() == codigo) { // Usa o getter getCodigo()
+            if (p.getCodigo() == codigo) { 
                 return p;
             }
         }
@@ -52,7 +52,6 @@ public class Main {
         int codigo = teclado.nextInt();
         teclado.nextLine();
 
-        // Evita duplicidade usando a busca
         if (buscarPorCodigo(codigo) != null) {
             System.out.println("Erro: Código já cadastrado!");
             return;
@@ -77,7 +76,7 @@ public class Main {
         }
 
         for (Produto p : produtos) {
-            System.out.println(p); // Usa o toString() de Produto
+            System.out.println(p);
         }
     }
 
