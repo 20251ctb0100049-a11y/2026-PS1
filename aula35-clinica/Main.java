@@ -37,7 +37,7 @@ public class Main {
         System.out.println("Sistema encerrado.");
     }
 
-    // Método de busca corrigido
+    // Método de busca corrigi
     static Produto buscarPorCodigo(int codigo) {
         for (Produto p : produtos) {
             if (p.getCodigo() == codigo) { 
