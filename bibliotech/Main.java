@@ -1,6 +1,6 @@
 /*
  * Disciplina: 2026-PS
- * Projeto   : bibliotech
+ * Projeto   : bibliotechh
  * Arquivo   : Main.java
  * Autor     : seu nome
  * Descricao : esqueleto do BiblioTech (Aula 36). Ainda nao faz nada:
