@@ -45,3 +45,9 @@ O BiblioTech atende a bibliotecaria Dona Marli e os leitores do campus. O sistem
 ### Classes
 
 ![Diagrama de classes do BiblioTech](docs/classes.svg)
+
+## 5. O que o codigo devolveu ao diagrama (Aula 37)
+
+ Livro ganhou o atributo disponivel: boolean, porque estaDisponivel() precisa
+ 
+ Leitor ganhou livrosEmMaos: int, porque podePegarEmprestado() compara com o
