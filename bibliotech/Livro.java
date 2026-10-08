@@ -11,15 +11,20 @@ public class Livro {
     private String titulo;
     private String autor;
     private int ano;
-    private boolean disponivel; // nao estava na caixa: o codigo pediu]
+    private boolean disponivel;
 
-    // CONSTRUTOR: preenche a ficha do livro no momento do "new".
-public Livro(String titulo, String autor, int ano) {
-    this.titulo = titulo;
-    this.autor = autor;
-    this.ano = ano;
-    this.disponivel = true; 
-}
+    // CONSTRUTOR 1: com 3 parâmetros (titulo, autor e ano)
+    public Livro(String titulo, String autor, int ano) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.ano = ano;
+        this.disponivel = true; 
+    }
+
+    // CONSTRUTOR 2 (ADICIONADO): aceita apenas 2 parâmetros e atribui ano padrão 0
+    public Livro(String titulo, String autor) {
+        this(titulo, autor, 0);
+    }
 
     // GETTERS: as janelas de leitura.
     public String getTitulo() {
