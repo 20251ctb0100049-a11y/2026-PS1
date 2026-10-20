@@ -81,3 +81,24 @@ java TelaBiblioteca
 - RNF02: qualquer pessoa que abre a janela pode emprestar e devolver; nao ha l
 - Cadastrar livro e leitor pela janela: hoje o cadastro esta no `main` de `Tel
 - Guardar os dados: ao fechar o programa, os emprestimos se perdem.
+
+## 9. Persistência de Dados
+
+### Banco de Dados Utilizado
+A aplicação utiliza o banco de dados relacional **MariaDB / MySQL** configurado no ambiente de desenvolvimento.
+
+### Estrutura e Classes
+- **`Conexao`**: Classe responsável por gerenciar e estabelecer a conexão entre a aplicação Java e o banco de dados via JDBC driver.
+- **`LivroDAO`**: Objeto de Acesso a Dados (DAO) responsável por abstrair e executar os comandos SQL no banco de dados.
+
+### Métodos Implementados
+- `adicionarLivro(String titulo, String autor, int anoPublicacao)`: Insere um novo registro de livro na tabela `livros`.
+- `atualizarLivro(int id, String titulo, String autor, int anoPublicacao)`: Atualiza as informações de um livro existente filtrado pelo seu `id`. Retorna `false` caso o registro não exista.
+- `excluirLivro(int id)`: Remove um livro da tabela pelo seu `id`. Retorna `false` caso o registro não exista.
+
+### Configuração de Variáveis de Ambiente
+A aplicação utiliza variáveis de ambiente para realizar a autenticação com segurança. Configure no terminal antes da execução:
+
+```bash
+export DB_USER="seu_usuario"
+export DB_PASSWORD="sua_senha"
