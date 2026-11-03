@@ -59,11 +59,10 @@ public class LivroDAO {
         }
     }
 
-    public List<String> listarLivros() {
-        List<String> livros = new ArrayList<>();
+    public List<Livro> listarLivros() {
+        List<Livro> livros = new ArrayList<>();
 
-        // Alterado de "ORDER BY titulo" para "ORDER BY ano DESC"
-        String sql = "SELECT id, titulo, autor, ano FROM livros ORDER BY ano DESC";
+        String sql = "SELECT id, titulo, autor, ano FROM livros ORDER BY titulo";
 
         try (Connection conexao = Conexao.conectar();
              PreparedStatement comando = conexao.prepareStatement(sql);
@@ -75,7 +74,7 @@ public class LivroDAO {
                 String autor = resultado.getString("autor");
                 int ano = resultado.getInt("ano");
 
-                String livro = id + " - " + titulo + " - " + autor + " (" + ano + ")";
+                Livro livro = new Livro(id, titulo, autor, ano);
                 livros.add(livro);
             }
 
@@ -86,7 +85,7 @@ public class LivroDAO {
         return livros;
     }
 
-    public String buscarLivroPorId(int id) {
+    public Livro buscarLivroPorId(int id) {
         String sql = "SELECT id, titulo, autor, ano FROM livros WHERE id = ?";
 
         try (Connection conexao = Conexao.conectar();
@@ -101,7 +100,7 @@ public class LivroDAO {
                     String autor = resultado.getString("autor");
                     int ano = resultado.getInt("ano");
 
-                    return codigo + " - " + titulo + " - " + autor + " (" + ano + ")";
+                    return new Livro(codigo, titulo, autor, ano);
                 }
             }
 

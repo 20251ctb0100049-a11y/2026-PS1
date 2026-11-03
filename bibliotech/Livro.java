@@ -7,56 +7,56 @@
  */
 public class Livro {
 
-    // ATRIBUTOS: a faixa do meio da caixa, um por linha, todos private.
+    private int id;
     private String titulo;
     private String autor;
     private int ano;
-    private boolean disponivel;
 
-    // CONSTRUTOR 1: com 3 parâmetros (titulo, autor e ano)
+    // Construtor sem ID (para novos cadastros antes de salvar no banco)
     public Livro(String titulo, String autor, int ano) {
         this.titulo = titulo;
         this.autor = autor;
         this.ano = ano;
-        this.disponivel = true; 
     }
 
-    // CONSTRUTOR 2 (ADICIONADO): aceita apenas 2 parâmetros e atribui ano padrão 0
-    public Livro(String titulo, String autor) {
-        this(titulo, autor, 0);
+    // Construtor completo com ID (para registros vindos do MariaDB)
+    public Livro(int id, String titulo, String autor, int ano) {
+        this.id = id;
+        this.titulo = titulo;
+        this.autor = autor;
+        this.ano = ano;
     }
 
-    // GETTERS: as janelas de leitura.
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getTitulo() {
         return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getAutor() {
         return autor;
     }
 
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
     public int getAno() {
         return ano;
     }
 
-    // OPERACAO DA CAIXA: estaDisponivel(), a faixa de baixo do diagrama.
-    public boolean estaDisponivel() {
-        return disponivel;
+    public void setAno(int ano) {
+        this.ano = ano;
     }
-
-    // Os dois metodos que o emprestimo vai usar na Aula 38.
-    public void emprestar() {
-        this.disponivel = false;
-    }
-
-    public void devolver() {
-        this.disponivel = true;
-    }
-
-    // toString: como a ficha se apresenta (Aula 34).
-    public String toString() {
-        String situacao = disponivel ? "disponivel" : "emprestado";
-        return titulo + " (" + autor + ", " + ano + ") - " + situacao;
-    }
-
 }
