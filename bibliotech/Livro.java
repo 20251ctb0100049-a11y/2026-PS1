@@ -1,10 +1,3 @@
-/*
- * Disciplina: 2026-PS
- * Projeto    : bibliotech
- * Arquivo    : Livro.java
- * Autor      : seu nome
- * Descricao  : a caixa "Livro" do diagrama de classes, em Java (Aula 37).
- */
 public class Livro {
 
     private int id;
