@@ -1,18 +1,10 @@
 public class Livro {
-
     private int id;
     private String titulo;
     private String autor;
     private int ano;
+    private String capa;
 
-    // Construtor sem ID (para novos cadastros antes de salvar no banco)
-    public Livro(String titulo, String autor, int ano) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.ano = ano;
-    }
-
-    // Construtor completo com ID (para registros vindos do MariaDB)
     public Livro(int id, String titulo, String autor, int ano) {
         this.id = id;
         this.titulo = titulo;
@@ -20,7 +12,6 @@ public class Livro {
         this.ano = ano;
     }
 
-    // Getters e Setters
     public int getId() {
         return id;
     }
@@ -51,5 +42,13 @@ public class Livro {
 
     public void setAno(int ano) {
         this.ano = ano;
+    }
+
+    public String getCapa() {
+        return capa;
+    }
+
+    public void setCapa(String capa) {
+        this.capa = capa;
     }
 }

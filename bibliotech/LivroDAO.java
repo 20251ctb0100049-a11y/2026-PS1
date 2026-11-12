@@ -9,7 +9,7 @@ public class LivroDAO {
 
     public List<Livro> listarLivros() {
         List<Livro> livros = new ArrayList<>();
-        String sql = "SELECT id, titulo, autor, ano FROM livros ORDER BY id";
+        String sql = "SELECT id, titulo, autor, ano, capa FROM livros ORDER BY id";
 
         try (Connection conexao = Conexao.conectar();
              PreparedStatement comando = conexao.prepareStatement(sql);
@@ -22,6 +22,7 @@ public class LivroDAO {
                     resultado.getString("autor"),
                     resultado.getInt("ano")
                 );
+                livro.setCapa(resultado.getString("capa"));
                 livros.add(livro);
             }
 
@@ -33,7 +34,7 @@ public class LivroDAO {
     }
 
     public Livro buscarLivroPorId(int id) {
-        String sql = "SELECT id, titulo, autor, ano FROM livros WHERE id = ?";
+        String sql = "SELECT id, titulo, autor, ano, capa FROM livros WHERE id = ?";
 
         try (Connection conexao = Conexao.conectar();
              PreparedStatement comando = conexao.prepareStatement(sql)) {
@@ -42,12 +43,14 @@ public class LivroDAO {
 
             try (ResultSet resultado = comando.executeQuery()) {
                 if (resultado.next()) {
-                    return new Livro(
+                    Livro livro = new Livro(
                         resultado.getInt("id"),
                         resultado.getString("titulo"),
                         resultado.getString("autor"),
                         resultado.getInt("ano")
                     );
+                    livro.setCapa(resultado.getString("capa"));
+                    return livro;
                 }
             }
 
@@ -58,11 +61,9 @@ public class LivroDAO {
         return null;
     }
 
-    // === NOVO MÉTODOS DA AULA 44 (PARTE 18) ===
     public List<Livro> buscarLivrosPorTitulo(String titulo) {
         List<Livro> livros = new ArrayList<>();
-
-        String sql = "SELECT id, titulo, autor, ano " +
+        String sql = "SELECT id, titulo, autor, ano, capa " +
                      "FROM livros " +
                      "WHERE titulo LIKE ? " +
                      "ORDER BY titulo";
@@ -80,6 +81,7 @@ public class LivroDAO {
                         resultado.getString("autor"),
                         resultado.getInt("ano")
                     );
+                    livro.setCapa(resultado.getString("capa"));
                     livros.add(livro);
                 }
             }
