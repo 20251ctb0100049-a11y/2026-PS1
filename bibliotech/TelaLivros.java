@@ -1,9 +1,13 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class TelaLivros extends JFrame {
@@ -18,16 +22,17 @@ public class TelaLivros extends JFrame {
     private final JLabel status = new JLabel("Pronto.");
 
     // Paleta de cores (Modelo 1 - Clássico Administrativo)
-    private final Color COR_PRIMARIA = new Color(30, 58, 138);      // Azul escuro
-    private final Color COR_FUNDO = new Color(248, 250, 252);       // Cinza muito claro
+    private final Color COR_PRIMARIA = new Color(30, 58, 138);
+    private final Color COR_DESTAQUE = new Color(15, 118, 110);
+    private final Color COR_FUNDO = new Color(248, 250, 252);
     private final Color COR_LINHA_PAR = Color.WHITE;
-    private final Color COR_LINHA_IMPAR = new Color(241, 245, 249); // Cinza suave
-    private final Color COR_SELECAO = new Color(191, 219, 254);     // Azul claro
-    private final Color COR_TEXTO = new Color(30, 41, 59);          // Grafite
+    private final Color COR_LINHA_IMPAR = new Color(241, 245, 249);
+    private final Color COR_SELECAO = new Color(191, 219, 254);
+    private final Color COR_TEXTO = new Color(30, 41, 59);
 
     public TelaLivros() {
         setTitle("BiblioTech | Gerenciamento de Livros");
-        setSize(980, 560);
+        setSize(1080, 580);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(COR_FUNDO);
@@ -45,8 +50,8 @@ public class TelaLivros extends JFrame {
         tituloBanner.setBorder(new EmptyBorder(12, 10, 12, 10));
         painelSuperior.add(tituloBanner, BorderLayout.NORTH);
 
-        // Painel de controles de pesquisa
-        JPanel controles = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        // Painel de controles
+        JPanel controles = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 10));
         controles.setBackground(COR_FUNDO);
         controles.setBorder(new EmptyBorder(4, 8, 4, 8));
 
@@ -54,6 +59,7 @@ public class TelaLivros extends JFrame {
         JButton buscarTitulo = criarBotao("Buscar Título", COR_PRIMARIA, Color.WHITE);
         JButton limparCampos = criarBotao("Limpar", new Color(226, 232, 240), COR_TEXTO);
         JButton mostrarTodos = criarBotao("Mostrar Todos", new Color(226, 232, 240), COR_TEXTO);
+        JButton botaoCapa = criarBotao("Selecionar capa", COR_DESTAQUE, Color.WHITE);
 
         Font fonteCampo = new Font("SansSerif", Font.PLAIN, 14);
         campoId.setFont(fonteCampo);
@@ -63,21 +69,24 @@ public class TelaLivros extends JFrame {
         controles.add(campoId);
         controles.add(buscarId);
 
-        controles.add(Box.createHorizontalStrut(10));
+        controles.add(Box.createHorizontalStrut(6));
 
         controles.add(criarLabel("Título:"));
         controles.add(campoTitulo);
         controles.add(buscarTitulo);
 
-        controles.add(Box.createHorizontalStrut(10));
+        controles.add(Box.createHorizontalStrut(6));
 
         controles.add(limparCampos);
         controles.add(mostrarTodos);
 
+        controles.add(Box.createHorizontalStrut(6));
+        controles.add(botaoCapa);
+
         painelSuperior.add(controles, BorderLayout.CENTER);
         add(painelSuperior, BorderLayout.NORTH);
 
-        // 2. Configuração do Modelo e JTable (com coluna Capa)
+        // 2. Configuração do Modelo e JTable
         modelo = new DefaultTableModel(
             new Object[]{"ID", "Capa", "Título", "Autor", "Ano"}, 0
         ) {
@@ -88,57 +97,59 @@ public class TelaLivros extends JFrame {
         };
 
         tabela = new JTable(modelo);
-        tabela.setRowHeight(85); // Altura definida para o Modelo 1
+        tabela.setRowHeight(85);
         tabela.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tabela.setForeground(COR_TEXTO);
         tabela.setSelectionBackground(COR_SELECAO);
         tabela.setSelectionForeground(COR_TEXTO);
         tabela.setGridColor(new Color(226, 232, 240));
         tabela.setShowVerticalLines(false);
+        tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Estilizando o cabeçalho da tabela
         JTableHeader header = tabela.getTableHeader();
         header.setFont(new Font("SansSerif", Font.BOLD, 14));
         header.setBackground(new Color(226, 232, 240));
         header.setForeground(COR_TEXTO);
         header.setPreferredSize(new Dimension(header.getWidth(), 36));
 
-        // Ajuste de largura das colunas
         tabela.getColumnModel().getColumn(0).setPreferredWidth(50);   // ID
-        tabela.getColumnModel().getColumn(1).setPreferredWidth(90);   // Capa
-        tabela.getColumnModel().getColumn(2).setPreferredWidth(340);  // Título
-        tabela.getColumnModel().getColumn(3).setPreferredWidth(240);  // Autor
+        tabela.getColumnModel().getColumn(1).setPreferredWidth(110);  // Capa
+        tabela.getColumnModel().getColumn(2).setPreferredWidth(350);  // Título
+        tabela.getColumnModel().getColumn(3).setPreferredWidth(250);  // Autor
         tabela.getColumnModel().getColumn(4).setPreferredWidth(80);   // Ano
 
-        // Renderizador personalizado (linhas alternadas + alinhamento + aviso "Sem capa")
         DefaultTableCellRenderer renderizador = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(
                     JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                
+
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 if (!isSelected) {
                     c.setBackground(row % 2 == 0 ? COR_LINHA_PAR : COR_LINHA_IMPAR);
                 }
 
-                // Centraliza ID, Capa e Ano
                 if (column == 0 || column == 1 || column == 4) {
                     setHorizontalAlignment(SwingConstants.CENTER);
                 } else {
                     setHorizontalAlignment(SwingConstants.LEFT);
                 }
 
-                // Estiliza a coluna de Capa quando não há imagem
                 if (column == 1) {
                     if (value instanceof Icon) {
                         setIcon((Icon) value);
                         setText("");
                     } else {
                         setIcon(null);
-                        setText(value != null ? value.toString() : "Sem capa");
-                        setFont(new Font("SansSerif", Font.ITALIC, 12));
-                        setForeground(new Color(100, 116, 139));
+                        String textoCapa = (value != null) ? value.toString() : "Sem capa";
+                        setText(textoCapa);
+                        if ("Sem capa".equals(textoCapa)) {
+                            setFont(new Font("SansSerif", Font.ITALIC, 12));
+                            setForeground(new Color(100, 116, 139));
+                        } else {
+                            setFont(new Font("SansSerif", Font.BOLD, 12));
+                            setForeground(COR_DESTAQUE);
+                        }
                     }
                 } else {
                     setIcon(null);
@@ -166,7 +177,7 @@ public class TelaLivros extends JFrame {
         status.setBorder(new EmptyBorder(6, 14, 10, 14));
         add(status, BorderLayout.SOUTH);
 
-        // 4. Eventos (mantidos da Aula 44)
+        // 4. Eventos
         buscarId.addActionListener(e -> buscarLivroPorId());
         campoId.addActionListener(e -> buscarLivroPorId());
 
@@ -175,6 +186,7 @@ public class TelaLivros extends JFrame {
 
         limparCampos.addActionListener(e -> limparPesquisa());
         mostrarTodos.addActionListener(e -> carregarLivros());
+        botaoCapa.addActionListener(e -> selecionarCapa());
 
         carregarLivros();
     }
@@ -208,14 +220,88 @@ public class TelaLivros extends JFrame {
     }
 
     private void adicionarLinha(Livro livro) {
-        // Por enquanto exibe "Sem capa"; nas próximas etapas receberá o ImageIcon
+        String infoCapa = (livro.getCapa() != null && !livro.getCapa().isBlank())
+                ? "Capa cadastrada"
+                : "Sem capa";
+
         modelo.addRow(new Object[]{
             livro.getId(),
-            "Sem capa",
+            infoCapa,
             livro.getTitulo(),
             livro.getAutor(),
             livro.getAno()
         });
+    }
+
+    private void selecionarCapa() {
+        int linha = tabela.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Selecione um livro na tabela."
+            );
+            return;
+        }
+
+        int linhaModelo = tabela.convertRowIndexToModel(linha);
+        int id = (int) modelo.getValueAt(linhaModelo, 0);
+
+        JFileChooser seletor = new JFileChooser();
+        seletor.setDialogTitle("Selecione a capa do livro");
+        seletor.setFileFilter(
+            new FileNameExtensionFilter(
+                "Imagens JPG e PNG", "jpg", "jpeg", "png"
+            )
+        );
+
+        if (seletor.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        Path destino = null;
+
+        try {
+            destino = Path.of(
+                ImagemLivro.salvar(
+                    seletor.getSelectedFile().toPath(),
+                    id
+                )
+            );
+
+            boolean atualizado = dao.atualizarCapa(
+                id, destino.toString().replace('\\', '/')
+            );
+
+            if (!atualizado) {
+                Files.deleteIfExists(destino);
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Não foi possível atualizar o livro."
+                );
+                return;
+            }
+
+            carregarLivros();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Capa salva com sucesso!"
+            );
+
+        } catch (Exception ex) {
+            if (destino != null) {
+                try {
+                    Files.deleteIfExists(destino);
+                } catch (IOException ignorado) {
+                }
+            }
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Erro ao salvar capa: " + ex.getMessage()
+            );
+        }
     }
 
     private void buscarLivroPorId() {
