@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,10 @@ public class LivroDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar livros: " + e.getMessage());
+            throw new PersistenciaException(
+                "Não foi possível consultar os livros.",
+                e
+            );
         }
 
         return livros;
@@ -55,7 +59,10 @@ public class LivroDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar livro por ID: " + e.getMessage());
+            throw new PersistenciaException(
+                "Não foi possível consultar o livro pelo ID.",
+                e
+            );
         }
 
         return null;
@@ -87,7 +94,10 @@ public class LivroDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar livros por título: " + e.getMessage());
+            throw new PersistenciaException(
+                "Não foi possível consultar os livros pelo título.",
+                e
+            );
         }
 
         return livros;
@@ -105,8 +115,47 @@ public class LivroDAO {
             return comando.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar capa: " + e.getMessage());
-            return false;
+            throw new PersistenciaException(
+                "Não foi possível atualizar a capa do livro.",
+                e
+            );
         }
+    }
+
+    // ACRÉSCIMO DA PARTE 22: Validação de regras de negócio antes de inserir no banco
+    public int inserirLivro(Livro livro) throws LivroInvalidoException {
+        ValidadorLivro.validar(
+            livro.getTitulo(),
+            livro.getAutor(),
+            livro.getAno()
+        );
+
+        String sql = "INSERT INTO livros (titulo, autor, ano, capa) VALUES (?, ?, ?, ?)";
+
+        try (Connection conexao = Conexao.conectar();
+             PreparedStatement comando = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            comando.setString(1, livro.getTitulo());
+            comando.setString(2, livro.getAutor());
+            comando.setInt(3, livro.getAno());
+            comando.setString(4, livro.getCapa());
+
+            int afetadas = comando.executeUpdate();
+            if (afetadas > 0) {
+                try (ResultSet chaves = comando.getGeneratedKeys()) {
+                    if (chaves.next()) {
+                        return chaves.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new PersistenciaException(
+                "Não foi possível cadastrar o livro.",
+                e
+            );
+        }
+
+        return -1;
     }
 }

@@ -25,13 +25,13 @@ public class TelaLivros extends JFrame {
     private final JTextField campoTitulo = new JTextField(14);
     private final JLabel status = new JLabel("Pronto.");
 
-    // Componentes do Painel de Detalhes (Etapa 3)
+    // Componentes do Painel de Detalhes
     private final JLabel lblCapaGrande = new JLabel("Sem capa", SwingConstants.CENTER);
     private final JLabel lblDetalheTitulo = new JLabel("Selecione um livro");
     private final JLabel lblDetalheAutor = new JLabel("-");
     private final JLabel lblDetalheAno = new JLabel("-");
 
-    // Paleta de cores (Modelo 1)
+    // Paleta de cores
     private final Color COR_PRIMARIA = new Color(30, 58, 138);
     private final Color COR_DESTAQUE = new Color(15, 118, 110);
     private final Color COR_FUNDO = new Color(248, 250, 252);
@@ -173,7 +173,7 @@ public class TelaLivros extends JFrame {
         scrollPane.getViewport().setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
 
-        // 3. Painel Lateral de Detalhes do Livro Selecionado (Etapa 3)
+        // 3. Painel Lateral de Detalhes do Livro Selecionado
         JPanel painelDetalhes = new JPanel();
         painelDetalhes.setLayout(new BoxLayout(painelDetalhes, BoxLayout.Y_AXIS));
         painelDetalhes.setPreferredSize(new Dimension(240, 0));
@@ -259,21 +259,34 @@ public class TelaLivros extends JFrame {
 
         int linhaModelo = tabela.convertRowIndexToModel(linha);
         int id = (int) modelo.getValueAt(linhaModelo, 0);
-        Livro livro = dao.buscarLivroPorId(id);
 
-        if (livro != null) {
-            lblDetalheTitulo.setText("<html><center>" + livro.getTitulo() + "</center></html>");
-            lblDetalheAutor.setText(livro.getAutor());
-            lblDetalheAno.setText("Ano: " + livro.getAno());
+        try {
+            Livro livro = dao.buscarLivroPorId(id);
 
-            ImageIcon grande = carregarImagemRedimensionada(livro.getCapa(), 120, 160);
-            if (grande != null) {
-                lblCapaGrande.setIcon(grande);
-                lblCapaGrande.setText("");
-            } else {
-                lblCapaGrande.setIcon(null);
-                lblCapaGrande.setText("Sem capa");
+            if (livro != null) {
+                lblDetalheTitulo.setText("<html><center>" + livro.getTitulo() + "</center></html>");
+                lblDetalheAutor.setText(livro.getAutor());
+                lblDetalheAno.setText("Ano: " + livro.getAno());
+
+                ImageIcon grande = carregarImagemRedimensionada(livro.getCapa(), 120, 160);
+                if (grande != null) {
+                    lblCapaGrande.setIcon(grande);
+                    lblCapaGrande.setText("");
+                } else {
+                    lblCapaGrande.setIcon(null);
+                    lblCapaGrande.setText("Sem capa");
+                }
             }
+        } catch (PersistenciaException e) {
+            status.setText("Erro ao consultar o banco.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível carregar os detalhes do livro. Verifique a conexão com o MariaDB.",
+                "Erro de conexão",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -308,13 +321,33 @@ public class TelaLivros extends JFrame {
         }
     }
 
+    // Etapa 3 — Apresentando uma mensagem amigável
     private void carregarLivros() {
-        modelo.setRowCount(0);
-        List<Livro> livros = dao.listarLivros();
-        for (Livro livro : livros) {
-            adicionarLinha(livro);
+        try {
+            List<Livro> livros = dao.listarLivros();
+
+            modelo.setRowCount(0);
+
+            for (Livro livro : livros) {
+                adicionarLinha(livro);
+            }
+
+            status.setText("Livros encontrados: " + livros.size());
+
+        } catch (PersistenciaException e) {
+            status.setText("Erro ao consultar o banco.");
+
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível carregar os livros. " +
+                "Verifique a conexão com o MariaDB.",
+                "Erro de conexão",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
-        status.setText("Livros apresentados: " + livros.size());
     }
 
     private void adicionarLinha(Livro livro) {
@@ -327,6 +360,7 @@ public class TelaLivros extends JFrame {
         });
     }
 
+    // Etapa 4 — Tratando erros ao salvar imagens e atualizar no banco
     private void selecionarCapa() {
         int linha = tabela.getSelectedRow();
         if (linha == -1) {
@@ -335,7 +369,7 @@ public class TelaLivros extends JFrame {
         }
 
         int linhaModelo = tabela.convertRowIndexToModel(linha);
-        int id = (int) modelo.getValueAt(linhaModelo, 0);
+        int idLivro = (int) modelo.getValueAt(linhaModelo, 0);
 
         JFileChooser seletor = new JFileChooser();
         seletor.setDialogTitle("Selecione a capa do livro");
@@ -343,10 +377,10 @@ public class TelaLivros extends JFrame {
 
         if (seletor.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
 
-        File arquivoSelecionado = seletor.getSelectedFile();
+        Path arquivoSelecionado = seletor.getSelectedFile().toPath();
 
-        // Desafio adicional: Prévia da imagem selecionada antes de salvá-la
-        ImageIcon iconePrevia = carregarImagemRedimensionada(arquivoSelecionado.getAbsolutePath(), 120, 160);
+        // Prévia da imagem selecionada antes de salvá-la
+        ImageIcon iconePrevia = carregarImagemRedimensionada(arquivoSelecionado.toString(), 120, 160);
         if (iconePrevia != null) {
             JLabel previa = new JLabel(iconePrevia);
             int resposta = JOptionPane.showConfirmDialog(
@@ -361,8 +395,11 @@ public class TelaLivros extends JFrame {
 
         Path destino = null;
         try {
-            destino = Path.of(ImagemLivro.salvar(arquivoSelecionado.toPath(), id));
-            boolean atualizado = dao.atualizarCapa(id, destino.toString().replace('\\', '/'));
+            String caminho = ImagemLivro.salvar(arquivoSelecionado, idLivro);
+            System.out.println("Imagem salva em: " + caminho);
+
+            destino = Path.of(caminho);
+            boolean atualizado = dao.atualizarCapa(idLivro, caminho.replace('\\', '/'));
 
             if (!atualizado) {
                 Files.deleteIfExists(destino);
@@ -373,40 +410,93 @@ public class TelaLivros extends JFrame {
             carregarLivros();
             JOptionPane.showMessageDialog(this, "Capa salva com sucesso!");
 
-        } catch (Exception ex) {
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível salvar a imagem.",
+                "Erro",
+                JOptionPane.ERROR_MESSAGE
+            );
+            e.printStackTrace();
+
+        } catch (PersistenciaException e) {
             if (destino != null) {
                 try {
                     Files.deleteIfExists(destino);
                 } catch (IOException ignorado) {
                 }
             }
-            JOptionPane.showMessageDialog(this, "Erro ao salvar capa: " + ex.getMessage());
+            status.setText("Erro ao consultar o banco.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível salvar a capa no banco de dados. " +
+                "Verifique a conexão com o MariaDB.",
+                "Erro de conexão",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
+    // Etapa 1 + Etapa 3 — Validando o identificador e tratando erro de banco
     private void buscarLivroPorId() {
         String texto = campoId.getText().trim();
         int id;
+
         try {
             id = Integer.parseInt(texto);
-            if (id <= 0) throw new NumberFormatException();
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Informe um ID inteiro positivo.", "Entrada inválida", JOptionPane.WARNING_MESSAGE);
+
+            if (id <= 0) {
+                throw new IllegalArgumentException(
+                    "O ID deve ser positivo."
+                );
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Informe um número inteiro válido."
+            );
+            return;
+
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage()
+            );
             return;
         }
 
-        Livro livro = dao.buscarLivroPorId(id);
-        modelo.setRowCount(0);
+        try {
+            Livro livro = dao.buscarLivroPorId(id);
+            modelo.setRowCount(0);
 
-        if (livro == null) {
-            status.setText("Nenhum livro encontrado para o ID " + id);
-            JOptionPane.showMessageDialog(this, "Livro não encontrado.");
-        } else {
-            adicionarLinha(livro);
-            status.setText("Livro encontrado: " + livro.getTitulo());
+            if (livro == null) {
+                status.setText("Nenhum livro encontrado para o ID " + id);
+                JOptionPane.showMessageDialog(this, "Livro não encontrado.");
+            } else {
+                adicionarLinha(livro);
+                status.setText("Livro encontrado: " + livro.getTitulo());
+            }
+
+        } catch (PersistenciaException e) {
+            status.setText("Erro ao consultar o banco.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível buscar o livro. " +
+                "Verifique a conexão com o MariaDB.",
+                "Erro de conexão",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
+    // Etapa 3 — Busca por título tratando PersistenciaException
     private void buscarPorTitulo() {
         String titulo = campoTitulo.getText().trim();
         if (titulo.isEmpty()) {
@@ -414,15 +504,32 @@ public class TelaLivros extends JFrame {
             return;
         }
 
-        List<Livro> livros = dao.buscarLivrosPorTitulo(titulo);
-        modelo.setRowCount(0);
-        for (Livro livro : livros) {
-            adicionarLinha(livro);
-        }
-        status.setText("Livros encontrados: " + livros.size());
+        try {
+            List<Livro> livros = dao.buscarLivrosPorTitulo(titulo);
+            modelo.setRowCount(0);
 
-        if (livros.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nenhum livro encontrado.", "Resultado da Pesquisa", JOptionPane.INFORMATION_MESSAGE);
+            for (Livro livro : livros) {
+                adicionarLinha(livro);
+            }
+
+            status.setText("Livros encontrados: " + livros.size());
+
+            if (livros.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nenhum livro encontrado.", "Resultado da Pesquisa", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (PersistenciaException e) {
+            status.setText("Erro ao consultar o banco.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível buscar os livros. " +
+                "Verifique a conexão com o MariaDB.",
+                "Erro de conexão",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
